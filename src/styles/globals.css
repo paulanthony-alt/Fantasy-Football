@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   HSL triplets so Tailwind can apply alpha: bg-surface-2/60 etc.
+   Light is the base; .dark overrides (dark is the app default).     */
+@layer base {
+  :root {
+    --bg: 220 20% 97%;
+    --surface-1: 0 0% 100%;
+    --surface-2: 220 20% 96%;
+    --surface-3: 220 16% 92%;
+    --border: 220 14% 88%;
+    --border-strong: 220 12% 78%;
+    --fg: 222 30% 11%;
+    --fg-muted: 220 10% 38%;
+    --fg-subtle: 220 9% 52%;
+    --accent: 202 88% 42%;
+    --accent-fg: 0 0% 100%;
+    --ring: 202 88% 42%;
+    --pos: 152 62% 33%;
+    --neg: 356 66% 48%;
+    --warn: 34 92% 42%;
+    --pos-qb: 340 65% 50%;
+    --pos-rb: 165 60% 36%;
+    --pos-wr: 211 75% 50%;
+    --pos-te: 32 88% 48%;
+    --shadow-1: 0 1px 2px rgb(16 24 40 / .06);
+    --shadow-2: 0 1px 2px rgb(16 24 40 / .05), 0 4px 12px -2px rgb(16 24 40 / .08);
+    --shadow-3: 0 2px 6px rgb(16 24 40 / .06), 0 20px 48px -12px rgb(16 24 40 / .22);
+    color-scheme: light;
+  }
+
+  .dark {
+    --bg: 224 32% 6%;
+    --surface-1: 223 28% 9%;
+    --surface-2: 223 24% 12%;
+    --surface-3: 222 20% 16%;
+    --border: 223 18% 17%;
+    --border-strong: 222 15% 25%;
+    --fg: 220 25% 94%;
+    --fg-muted: 219 13% 66%;
+    --fg-subtle: 220 10% 50%;
+    --accent: 199 92% 60%;
+    --accent-fg: 224 40% 8%;
+    --ring: 199 92% 60%;
+    --pos: 152 60% 50%;
+    --neg: 356 82% 64%;
+    --warn: 38 95% 58%;
+    --pos-qb: 340 75% 66%;
+    --pos-rb: 165 58% 50%;
+    --pos-wr: 211 88% 66%;
+    --pos-te: 32 92% 60%;
+    --shadow-1: 0 1px 2px rgb(0 0 0 / .4);
+    --shadow-2: 0 1px 2px rgb(0 0 0 / .35), 0 6px 16px -4px rgb(0 0 0 / .45);
+    --shadow-3: 0 2px 8px rgb(0 0 0 / .4), 0 24px 60px -12px rgb(0 0 0 / .65);
+    color-scheme: dark;
+  }
+
+  * { @apply border-border; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-bg text-fg font-sans text-base antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: hsl(var(--accent) / 0.3); }
+  :focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; border-radius: 4px; }
+  button:focus:not(:focus-visible) { outline: none; }
+  h1, h2, h3, h4 { @apply font-semibold tracking-tight; }
+}
+
+@layer components {
+  /* Tabular figures for any number that sits in a column */
+  .num { font-variant-numeric: tabular-nums slashed-zero; font-feature-settings: 'tnum', 'zero', 'cv11'; }
+  .mono { @apply font-mono; font-variant-numeric: tabular-nums slashed-zero; }
+  .label-caps { @apply text-2xs font-semibold uppercase tracking-[0.08em] text-fg-subtle; }
+  .card-hover { @apply transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-border-strong hover:shadow-e2; }
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: hsl(var(--border-strong)) transparent; }
+  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: hsl(var(--border-strong)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .bg-grid {
+    background-image: linear-gradient(hsl(var(--border) / .5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / .5) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}
+
+/* Recharts polish */
+.recharts-cartesian-grid line { stroke: hsl(var(--border)); }
+.recharts-text { fill: hsl(var(--fg-subtle)); font-size: 11px; }
+.recharts-tooltip-cursor { fill: hsl(var(--fg) / 0.04); }
+.recharts-surface:focus, .recharts-wrapper:focus, .recharts-sector:focus { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

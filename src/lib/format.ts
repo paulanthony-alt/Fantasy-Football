@@ -33,3 +33,9 @@ export function initials(name: string) {
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
+
+/** Last name without generational suffixes ("Michael Pittman Jr." → "Pittman"). */
+export function lastName(name: string) {
+  const parts = name.split(' ').filter((p) => !/^(Jr\.?|Sr\.?|II|III|IV|V)$/i.test(p));
+  return parts[parts.length - 1] ?? name;
+}

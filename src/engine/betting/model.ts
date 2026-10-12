@@ -62,6 +62,8 @@ export function modelGame(game: Game, home: Team, away: Team, players: Player[])
   return { homePts, awayPts, margin: homePts - awayPts, total: homePts + awayPts };
 }
 
+const line = (v: number) => (v === 0 ? 'PK' : v > 0 ? `+${v}` : `${v}`);
+
 function edge(label: string, side: string, modelProb: number, odds: number, otherOdds: number): MarketEdge {
   const [fair] = noVig(odds, otherOdds);
   const e = modelProb - fair;
@@ -75,8 +77,8 @@ export function analyzeGame(game: Game, odds: GameOdds, home: Team, away: Team, 
   const total = odds.total + w * (raw.total - odds.total);
   const model: GameModel = { margin, total, homePts: (total + margin) / 2, awayPts: (total - margin) / 2 };
   const pHomeCover = coverProb(model.margin, odds.spread);
-  const homeSpread = edge(`${home.id} ${odds.spread > 0 ? '+' : ''}${odds.spread}`, home.id, pHomeCover, -110, -110);
-  const awaySpread = edge(`${away.id} ${-odds.spread > 0 ? '+' : ''}${-odds.spread}`, away.id, 1 - pHomeCover, -110, -110);
+  const homeSpread = edge(`${home.id} ${line(odds.spread)}`, home.id, pHomeCover, -110, -110);
+  const awaySpread = edge(`${away.id} ${line(-odds.spread)}`, away.id, 1 - pHomeCover, -110, -110);
   const pOver = overProb(model.total, odds.total);
   const over = edge(`Over ${odds.total}`, 'over', pOver, -110, -110);
   const under = edge(`Under ${odds.total}`, 'under', 1 - pOver, -110, -110);

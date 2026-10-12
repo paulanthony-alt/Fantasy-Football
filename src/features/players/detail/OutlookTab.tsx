@@ -10,7 +10,7 @@ import { Card, CardBody, CardHeader } from '@/components/ui/card';
 import { Tooltip as UiTooltip } from '@/components/ui/tooltip';
 import { ChartTooltip } from '@/components/charts/ChartTooltip';
 import { axisProps, useChartTheme } from '@/components/charts/theme';
-import { fmt } from '@/lib/format';
+import { fmt, lastName } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 export function OutlookTab({ u, p, v }: { u: UniverseState; p: Player; v: PlayerValuation }) {
@@ -87,7 +87,7 @@ export function OutlookTab({ u, p, v }: { u: UniverseState; p: Player; v: Player
                   <YAxis {...axisProps(t)} axisLine={false} domain={[0, 105]} tickFormatter={(x) => `${x}%`} />
                   <Tooltip content={<ChartTooltip labelFormat={(l) => `Age ${l}`} format={(x) => `${x.toFixed(0)}% of peak`} />} />
                   <Line dataKey="Curve" stroke={t.textMuted} strokeWidth={2} dot={false} animationDuration={600} />
-                  <ReferenceDot x={Math.min(39, p.age)} y={ageCurve(p.position, p.age) * 100} r={6} fill={t.accent} stroke={t.surface} strokeWidth={2} label={{ value: p.name.split(' ').slice(-1)[0], position: 'top', fill: t.text, fontSize: 11 }} />
+                  <ReferenceDot x={Math.min(39, p.age)} y={ageCurve(p.position, p.age) * 100} r={6} fill={t.accent} stroke={t.surface} strokeWidth={2} label={{ value: lastName(p.name), position: 'top', fill: t.text, fontSize: 11 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

@@ -20,7 +20,7 @@ import { Sparkline } from '@/components/charts/Sparkline';
 import { ModeChips } from '@/components/layout/LeagueSwitcher';
 import { analyzeGame } from '@/engine/betting/model';
 import { trackerStats } from '@/engine/betting/tracker';
-import { fmt, ordinal, timeAgo } from '@/lib/format';
+import { fmt, ordinal, timeAgo, lastName } from '@/lib/format';
 import { impliedTotals, kickoffLabel, recentTrend } from '@/lib/stats';
 import { leagueFormat, STRATEGY_LABEL } from '@/lib/league';
 import { cn } from '@/lib/utils';
@@ -63,7 +63,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <KpiTile label="Projected lineup" icon={<ClipboardList />} value={`${fmt.num(lineup.total)} pts`} sub={`Range ${fmt.num(lineup.floor, 0)}–${fmt.num(lineup.ceiling, 0)} · ${myTeam?.record ? `${myTeam.record.w}–${myTeam.record.l}` : '—'}`} delta={lowConf ? <Badge tone="warn">{lowConf} close call{lowConf > 1 ? 's' : ''}</Badge> : <Badge tone="pos">Set</Badge>} />
         <KpiTile label="Roster value" icon={<Trophy />} value={fmt.value(myValue)} sub={`Ranks ${myRank} of ${u.league.rosters.length} by ${u.league.mode} value`} delta={<Badge tone={myRank <= 3 ? 'pos' : myRank > u.league.rosters.length - 3 ? 'neg' : 'neutral'}>#{myRank}</Badge>} />
-        <KpiTile label="Injury alerts" icon={<AlertTriangle />} value={injuredMine.length} sub={injuredMine.length ? injuredMine.slice(0, 2).map((p) => p.name.split(' ').slice(-1)[0]).join(', ') + (injuredMine.length > 2 ? ` +${injuredMine.length - 2}` : '') : 'Roster is healthy'} delta={injuredMine.length ? <Badge tone="neg">Action</Badge> : undefined} />
+        <KpiTile label="Injury alerts" icon={<AlertTriangle />} value={injuredMine.length} sub={injuredMine.length ? injuredMine.slice(0, 2).map((p) => lastName(p.name)).join(', ') + (injuredMine.length > 2 ? ` +${injuredMine.length - 2}` : '') : 'Roster is healthy'} delta={injuredMine.length ? <Badge tone="neg">Action</Badge> : undefined} />
         <KpiTile label="Betting P/L" icon={<LineChart />} value={<span className={betStats.profit >= 0 ? 'text-pos' : 'text-neg'}>{fmt.units(betStats.profit)}</span>} sub={`ROI ${fmt.signedPct(betStats.roi)} · ${bestEdge ? `Top edge ${bestEdge.label} ${fmt.signedPct(bestEdge.edge)}` : `${betStats.wins}–${betStats.losses}`}`} />
       </div>
 

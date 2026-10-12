@@ -1,5 +1,5 @@
 import type { Bet } from '@/data/types';
-import { payout } from './odds';
+import { americanFromProb, impliedProb, payout } from './odds';
 
 export function betProfit(b: Bet) {
   if (b.result === 'win') return b.units * payout(b.odds);
@@ -58,7 +58,8 @@ export function trackerStats(bets: Bet[]): TrackerStats {
     profit: running,
     roi: risked ? running / risked : 0,
     winRate: wins + losses ? wins / (wins + losses) : 0,
-    avgOdds: settledBets.length ? Math.round(settledBets.reduce((a, b) => a + b.odds, 0) / settledBets.length) : 0,
+    // Average via implied probability — averaging American odds directly is meaningless.
+    avgOdds: settledBets.length ? americanFromProb(settledBets.reduce((a, b) => a + impliedProb(b.odds), 0) / settledBets.length) : 0,
     series,
     byType: [...types.entries()].map(([type, v]) => ({ type, ...v })),
     streak,

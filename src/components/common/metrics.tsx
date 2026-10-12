@@ -36,7 +36,7 @@ export function ConfidenceMeter({ value, className, compact }: { value: number; 
         <motion.div className={cn('absolute inset-y-0 left-0 rounded-full', tone)} initial={{ width: 0 }} animate={{ width: `${((value - 50) / 49) * 100}%` }} transition={{ duration: 0.6, ease: [0.2, 0.8, 0.2, 1] }} />
       </div>
       <span className="num text-xs font-semibold text-fg">{value}</span>
-      {!compact && <span className="text-2xs text-fg-subtle">{word}</span>}
+      {!compact && <span className="whitespace-nowrap text-2xs text-fg-subtle">{word}</span>}
     </div>
   );
 }

@@ -26,7 +26,7 @@ export const useUi = create<UiState>()(
       theme: 'dark',
       density: 'compact',
       sidebarCollapsed: false,
-      liveData: true,
+      liveData: import.meta.env.MODE !== 'artifact',
       nflverseStats: false,
       commandOpen: false,
       setTheme: (theme) => set({ theme }),

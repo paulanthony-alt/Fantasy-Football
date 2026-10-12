@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -20,6 +20,9 @@ const Leagues = lazy(() => import('@/features/leagues/LeaguesPage'));
 const Settings = lazy(() => import('@/features/settings/SettingsPage'));
 const NotFound = lazy(() => import('@/features/NotFound'));
 
+/** Single-file builds (e.g. a hosted preview) can't rely on server-side routing. */
+const Router = import.meta.env.MODE === 'artifact' ? HashRouter : BrowserRouter;
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
@@ -29,7 +32,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={250} skipDelayDuration={100}>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
             <Route element={<AppShell />}>
               {[
@@ -61,7 +64,7 @@ export function App() {
               })}
             </Route>
           </Routes>
-        </BrowserRouter>
+        </Router>
         <Toaster
           theme={theme}
           position="bottom-right"

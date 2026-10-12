@@ -1,6 +1,9 @@
 import { Database, Monitor, Moon, RotateCcw, ShieldAlert, Sun, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useUi } from '@/store/ui';
 import { clearHttpCache } from '@/data/http';
 import { Card, CardBody, CardHeader } from '@/components/ui/card';
@@ -22,6 +25,17 @@ function Row({ title, desc, children }: { title: string; desc: string; children:
 export default function SettingsPage() {
   const ui = useUi();
   const qc = useQueryClient();
+  const nav = useNavigate();
+  const [confirmReset, setConfirmReset] = useState(false);
+  const reset = () => {
+    try {
+      Object.keys(localStorage).filter((k) => k.startsWith('ge:')).forEach((k) => localStorage.removeItem(k));
+    } catch {
+      /* storage unavailable */
+    }
+    nav('/');
+    setTimeout(() => window.location.reload(), 50);
+  };
   return (
     <div className="max-w-3xl space-y-4">
       <PageHeader title="Settings" subtitle="Display, data sources and local storage" />
@@ -54,7 +68,7 @@ export default function SettingsPage() {
         <CardHeader icon={<ShieldAlert />} title="Your data" subtitle="Leagues, rosters, trades and bets are stored only in this browser (localStorage)" />
         <CardBody className="py-1">
           <Row title="Reset everything" desc="Removes saved leagues, trades, bets and preferences, then reloads demo data.">
-            <Button variant="danger" size="sm" onClick={() => { if (window.confirm('Reset all local data? This cannot be undone.')) { Object.keys(localStorage).filter((k) => k.startsWith('ge:')).forEach((k) => localStorage.removeItem(k)); window.location.assign('/'); } }}><RotateCcw /> Reset</Button>
+            <Button variant="danger" size="sm" onClick={() => setConfirmReset(true)}><RotateCcw /> Reset</Button>
           </Row>
         </CardBody>
       </Card>
@@ -69,6 +83,11 @@ export default function SettingsPage() {
           ].map(([k, v]) => <div key={k} className="rounded-md bg-surface-2 p-3"><div className="text-fg-subtle">{k}</div><div className="mt-0.5 text-sm font-semibold">{v}</div></div>)}
         </CardBody>
       </Card>
+      <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
+        <DialogContent title="Reset all local data?" description="Saved leagues, trades, bets and preferences are removed from this browser and the demo data is reloaded. This can't be undone.">
+          <div className="flex justify-end gap-2 p-5"><Button variant="ghost" onClick={() => setConfirmReset(false)}>Cancel</Button><Button variant="danger" onClick={reset}><RotateCcw /> Reset everything</Button></div>
+        </DialogContent>
+      </Dialog>
       <p className="text-xs text-fg-subtle">Gridiron Edge is a research tool. Trade verdicts, projections and betting edges are estimates for informational and entertainment purposes only — not financial or gambling advice.</p>
     </div>
   );

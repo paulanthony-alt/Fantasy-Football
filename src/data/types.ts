@@ -237,6 +237,8 @@ export interface League {
   rosters: LeagueTeam[];
   createdAt: number;
   updatedAt: number;
+  /** Players imported from a platform that the data source doesn't model. */
+  extraPlayers?: Player[];
 }
 
 /* ────────────────────────────── Trades & bets ────────────────────────────── */

@@ -8,6 +8,8 @@ import { coverProb, expectedValue, impliedProb, kellyUnits, noVig, overProb, win
 import { matchupMultiplier } from '../valuation/redraft';
 
 export const VALUE_EDGE = 0.03;
+/** Weight on the raw model vs the market (markets are efficient — shrink toward them). */
+export const MODEL_WEIGHT = { game: 0.4, prop: 0.5 };
 
 export interface GameModel {
   homePts: number;
@@ -29,6 +31,9 @@ export interface MarketEdge {
 }
 
 export interface GameAnalysis {
+  /** Raw power-rating model. */
+  raw: GameModel;
+  /** Market-blended model used for probabilities. */
   model: GameModel;
   spread: MarketEdge;
   total: MarketEdge;
@@ -64,7 +69,11 @@ function edge(label: string, side: string, modelProb: number, odds: number, othe
 }
 
 export function analyzeGame(game: Game, odds: GameOdds, home: Team, away: Team, players: Player[]): GameAnalysis {
-  const model = modelGame(game, home, away, players);
+  const raw = modelGame(game, home, away, players);
+  const w = MODEL_WEIGHT.game;
+  const margin = -odds.spread + w * (raw.margin + odds.spread);
+  const total = odds.total + w * (raw.total - odds.total);
+  const model: GameModel = { margin, total, homePts: (total + margin) / 2, awayPts: (total - margin) / 2 };
   const pHomeCover = coverProb(model.margin, odds.spread);
   const homeSpread = edge(`${home.id} ${odds.spread > 0 ? '+' : ''}${odds.spread}`, home.id, pHomeCover, -110, -110);
   const awaySpread = edge(`${away.id} ${-odds.spread > 0 ? '+' : ''}${-odds.spread}`, away.id, 1 - pHomeCover, -110, -110);
@@ -75,10 +84,10 @@ export function analyzeGame(game: Game, odds: GameOdds, home: Team, away: Team, 
   const homeMl = edge(`${home.id} ML`, home.id, pHome, odds.homeMl, odds.awayMl);
   const awayMl = edge(`${away.id} ML`, away.id, 1 - pHome, odds.awayMl, odds.homeMl);
   const spread = homeSpread.edge >= awaySpread.edge ? homeSpread : awaySpread;
-  const total = over.edge >= under.edge ? over : under;
+  const totalEdge = over.edge >= under.edge ? over : under;
   const moneyline = homeMl.edge >= awayMl.edge ? homeMl : awayMl;
-  const best = [spread, total, moneyline].sort((a, b) => b.edge - a.edge)[0];
-  return { model, spread, total, moneyline, best };
+  const best = [spread, totalEdge, moneyline].sort((a, b) => b.edge - a.edge)[0];
+  return { raw, model, spread, total: totalEdge, moneyline, best };
 }
 
 export interface PropAnalysis {
@@ -104,7 +113,9 @@ export function analyzeProp(prop: PlayerProp, player: Player, opp: Team | undefi
   const mf = opp && player.position !== 'K' && player.position !== 'DST' ? matchupMultiplier(opp.defVsPos[player.position]) : 1;
   const avail = player.injury.status === 'Q' ? 0.93 : 1;
   const raw = { passYds: p.passYds, passTd: p.passTd, rushYds: p.rushYds, recYds: p.recYds, rec: p.rec, anytimeTd: p.rushTd + p.recTd }[prop.market];
-  const projection = raw * mf * avail;
+  const rawProj = raw * mf * avail;
+  // Shrink toward the market line (anytime-TD lines carry no yardage anchor).
+  const projection = prop.market === 'anytimeTd' || prop.market === 'passTd' ? rawProj : prop.line + MODEL_WEIGHT.prop * (rawProj - prop.line);
   let pOver: number;
   if (prop.market === 'anytimeTd') pOver = 1 - Math.exp(-projection);
   else if (prop.market === 'passTd') pOver = 1 - Math.exp(-projection) * (1 + projection);

@@ -40,6 +40,7 @@ export default {
         sans: ['"Inter Variable"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
+      opacity: { 3: '0.03', 6: '0.06', 8: '0.08', 12: '0.12', 14: '0.14', 18: '0.18', 35: '0.35', 45: '0.45', 55: '0.55', 65: '0.65', 85: '0.85' },
       borderRadius: { sm: '6px', DEFAULT: '8px', md: '8px', lg: '12px', xl: '16px' },
       boxShadow: {
         e1: 'var(--shadow-1)',

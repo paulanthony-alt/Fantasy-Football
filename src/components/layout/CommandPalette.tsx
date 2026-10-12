@@ -113,24 +113,35 @@ export function CommandPalette() {
                     ))}
                 </Command.Group>
               )}
-              <Command.Group heading="Leagues" className={groupCls}>
-                {leagues
-                  .filter((l) => !q || l.name.toLowerCase().includes(q.toLowerCase()) || 'league'.includes(q.toLowerCase()))
-                  .map((l) => (
-                    <Command.Item key={l.id} value={`league-${l.id}`} onSelect={() => { setActive(l.id); setOpen(false); setQ(''); }} className={itemCls}>
-                      <Trophy className="text-fg-subtle" />
-                      <span className="flex-1">Switch to {l.name}</span>
-                      <ArrowRight className="text-fg-subtle" />
-                    </Command.Item>
-                  ))}
-              </Command.Group>
-              <Command.Group heading="Actions" className={groupCls}>
-                <Command.Item value="action-trade" onSelect={() => go('/trade')} className={itemCls}><Plus className="text-fg-subtle" /> New trade</Command.Item>
-                <Command.Item value="action-bet" onSelect={() => go('/betting?tab=tracker')} className={itemCls}><Plus className="text-fg-subtle" /> Log a bet</Command.Item>
-                <Command.Item value="action-theme" onSelect={() => { toggleTheme(); setOpen(false); }} className={itemCls}>
-                  {theme === 'dark' ? <Sun className="text-fg-subtle" /> : <Moon className="text-fg-subtle" />} Switch to {theme === 'dark' ? 'light' : 'dark'} mode
-                </Command.Item>
-              </Command.Group>
+              {(() => {
+                const ql = q.toLowerCase();
+                const ls = leagues.filter((l) => !q || l.name.toLowerCase().includes(ql) || 'league'.includes(ql));
+                const actions = [
+                  { id: 'trade', label: 'New trade', icon: <Plus className="text-fg-subtle" />, run: () => go('/trade') },
+                  { id: 'bet', label: 'Log a bet', icon: <Plus className="text-fg-subtle" />, run: () => go('/betting?tab=tracker') },
+                  { id: 'theme', label: `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`, icon: theme === 'dark' ? <Sun className="text-fg-subtle" /> : <Moon className="text-fg-subtle" />, run: () => { toggleTheme(); setOpen(false); } },
+                ].filter((a) => !q || a.label.toLowerCase().includes(ql));
+                return (
+                  <>
+                    {ls.length > 0 && (
+                      <Command.Group heading="Leagues" className={groupCls}>
+                        {ls.map((l) => (
+                          <Command.Item key={l.id} value={`league-${l.id}`} onSelect={() => { setActive(l.id); setOpen(false); setQ(''); }} className={itemCls}>
+                            <Trophy className="text-fg-subtle" />
+                            <span className="flex-1">Switch to {l.name}</span>
+                            <ArrowRight className="text-fg-subtle" />
+                          </Command.Item>
+                        ))}
+                      </Command.Group>
+                    )}
+                    {actions.length > 0 && (
+                      <Command.Group heading="Actions" className={groupCls}>
+                        {actions.map((a) => <Command.Item key={a.id} value={`action-${a.id}`} onSelect={a.run} className={itemCls}>{a.icon} {a.label}</Command.Item>)}
+                      </Command.Group>
+                    )}
+                  </>
+                );
+              })()}
             </Command.List>
             <div className="flex items-center gap-3 border-t border-border px-4 py-2 text-2xs text-fg-subtle">
               <span className="flex items-center gap-1"><Kbd>↑</Kbd><Kbd>↓</Kbd> navigate</span>

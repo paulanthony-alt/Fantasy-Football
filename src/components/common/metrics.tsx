@@ -67,7 +67,7 @@ export function KpiTile({ label, value, sub, delta, icon, className, children }:
       <div className="flex items-center gap-2">
         {icon && <span className="text-fg-subtle [&_svg]:size-4">{icon}</span>}
         <span className="label-caps truncate">{label}</span>
-        {delta && <span className="ml-auto">{delta}</span>}
+        {delta && <span className="ml-auto hidden sm:inline">{delta}</span>}
       </div>
       <div className="num truncate text-xl font-semibold tracking-tight text-fg">{value}</div>
       {sub && <div className="truncate text-xs text-fg-subtle">{sub}</div>}

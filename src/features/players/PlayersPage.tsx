@@ -110,6 +110,7 @@ export default function PlayersPage() {
       />
       <Card className="overflow-hidden">
         <DataTable
+          key={u.league.mode}
           data={filtered}
           columns={columns}
           getRowId={(r) => r.p.id}

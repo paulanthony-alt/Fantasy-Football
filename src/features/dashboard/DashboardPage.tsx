@@ -110,7 +110,7 @@ function SlateCard({ u, odds, loading, updatedAt, className }: { u: UniverseStat
                 <th className="hidden px-2 py-2 text-left font-semibold sm:table-cell">Kickoff</th>
                 <th className="px-2 py-2 text-right font-semibold">Spread</th>
                 <th className="px-2 py-2 text-right font-semibold">Total</th>
-                <th className="px-4 py-2 text-right font-semibold">Implied</th>
+                <th className="hidden px-4 py-2 text-right font-semibold md:table-cell">Implied</th>
               </tr>
             </thead>
             <tbody>
@@ -129,9 +129,9 @@ function SlateCard({ u, odds, loading, updatedAt, className }: { u: UniverseStat
                       </div>
                     </td>
                     <td className="hidden px-2 py-2.5 text-xs text-fg-subtle sm:table-cell">{kickoffLabel(g.kickoff)} · {g.network}</td>
-                    <td className="num px-2 py-2.5 text-right">{o ? <span>{g.home} {fmt.spread(o.spread)}</span> : '—'}</td>
-                    <td className="num px-2 py-2.5 text-right">{o ? o.total.toFixed(1) : '—'}</td>
-                    <td className="num px-4 py-2.5 text-right text-xs text-fg-muted">{it ? `${g.away} ${it.away.toFixed(1)} · ${g.home} ${it.home.toFixed(1)}` : '—'}</td>
+                    <td className="num whitespace-nowrap px-2 py-2.5 text-right">{o ? <span>{g.home} {fmt.spread(o.spread)}</span> : '—'}</td>
+                    <td className="num px-4 py-2.5 text-right sm:px-2">{o ? o.total.toFixed(1) : '—'}</td>
+                    <td className="num hidden px-4 py-2.5 text-right text-xs text-fg-muted md:table-cell">{it ? `${g.away} ${it.away.toFixed(1)} · ${g.home} ${it.home.toFixed(1)}` : '—'}</td>
                   </tr>
                 );
               })}

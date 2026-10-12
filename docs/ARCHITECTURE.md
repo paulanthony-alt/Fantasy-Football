@@ -135,11 +135,11 @@ market charts do. Draft picks have **no** redraft value (shown as "dynasty only"
 ```
 for year y = 0…4:
   ageFactor_y  = curve[pos](age + y) / curve[pos](age)   // positional aging curve
-  control_y    = y < contractYears ? 1 : 0.92            // contract / years of control
+  control_y    = y < contractYears ? 1 : 0.94            // contract / years of control
   survival_y   = Π (1 − attrition[pos](age + k))          // career-ending risk
   ppg_y        = talentPPG × ageFactor_y × control_y × survival_y
   VORP_y       = 17 × ppg_y − replacementSeason[pos]
-dynastyRaw = Σ VORP_y × discount^y                        // discount by strategy
+dynastyRaw = Σ VORP_y × discount^y  (current season × 0.7)   // discount by strategy
 value      = scale(dynastyRaw) + rookie/draft-capital premium
 ```
 Aging curves (peak plateaus): RB 23–26, WR 25–28, TE 26–29, QB 27–33 with

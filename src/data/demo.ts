@@ -34,12 +34,12 @@ const SPECS: DemoSpec[] = [
   {
     id: 'demo-dynasty', name: 'Dynasty Syndicate', mode: 'dynasty', superflex: true,
     scoring: { ppr: 1, tePremium: 0.5, passTd: 4, passYd: 0.04, int: -2 },
-    slots: { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 2, SUPERFLEX: 1, K: 0, DST: 0 }, rosterSize: 26, myIndex: 7, strategy: 'balanced',
+    slots: { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 2, SUPERFLEX: 1, K: 0, DST: 0 }, rosterSize: 16, myIndex: 7, strategy: 'balanced',
   },
   {
     id: 'demo-keeper', name: 'Office Keeper League', mode: 'keeper', superflex: false,
     scoring: { ppr: 1, tePremium: 0, passTd: 6, passYd: 0.04, int: -2 },
-    slots: { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, SUPERFLEX: 0, K: 1, DST: 1 }, rosterSize: 18, myIndex: 2, strategy: 'balanced',
+    slots: { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, SUPERFLEX: 0, K: 1, DST: 1 }, rosterSize: 16, myIndex: 2, strategy: 'balanced',
   },
 ];
 
